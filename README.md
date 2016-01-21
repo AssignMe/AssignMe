@@ -36,7 +36,7 @@ You need Node.js on your system to be able to run this script.
 
 
 
-## To start using the scrip: 
+## To start using the script: 
 * _If it's the first time you run the script_ do `npm install`
 * Create a text file "token" -no prefix- which contains [your own token] (https://help.github.com/articles/creating-an-access-token-for-command-line-use/)
   - It's content should look like (dummy token): `token 5199831f4dd3b79e7c5b7e0ebe75d67aa66e79d4`
