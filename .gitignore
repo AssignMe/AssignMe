@@ -32,3 +32,6 @@ node_modules
 
 # Optional REPL history
 .node_repl_history
+
+# Contains the admin user's token with the format of: token XXXX
+token

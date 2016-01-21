@@ -1,0 +1,20 @@
+{
+  "name": "AssignMe",
+  "version": "1.0.0",
+  "author": "Samim Mirhosseini",
+  "license": "GPLv3",
+  "description": "Generating mass GitHub repos/teams under an existing organization and assigning users to their corresponding teams. At the end there is an option for changing their access to read only.",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "AssignMe"
+  ],
+  "devDependencies": {
+    "request": "^2.67.0"
+  },
+  "engines": {
+    "node": ">=0.11.6"
+  }
+}
