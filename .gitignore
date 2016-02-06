@@ -35,3 +35,6 @@ node_modules
 
 # Contains the admin user's token with the format of: token XXX:
 token
+
+# Contains the team data:
+team.json
