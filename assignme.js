@@ -6,7 +6,7 @@ var token = fs.readFileSync('token');
 
 //**************************************************************
 //**************************************************************
-//************* Creation / Assignment functions ****************
+//*************** Creation / Assignment functions **************
 //**************************************************************
 //**************************************************************
 
@@ -39,7 +39,7 @@ function createRepo(name, org) {
 /**
  * Deletes a repository under the given org
  * Notice: if using OAuth, the `delete_repo` scope is required
- * 
+ *
  * @param repoName repository name
  * @param org Organization name
  */
@@ -90,10 +90,10 @@ function createTeam(teamName, org) {
 
 /**
  * Adds the given repository to the given team
- * 
+ *
  * @param repoName Repository name
  * @param teamName Team name
- * @param org Organization name 
+ * @param org Organization name
  */
 function addRepoToTeam(repoName, teamName, org) {
 	var options = {
@@ -113,7 +113,7 @@ function addRepoToTeam(repoName, teamName, org) {
 
 /**
  * Deletes a team, given it's id
- * 
+ *
  * @param id Team id
  */
 function deleteTeam(id) {
@@ -139,7 +139,7 @@ function deleteTeam(id) {
 
 /**
  * Gets team data for all teams under the given organization
- * 
+ *
  * @param org Organization name
  */
 function getTeamData(org) {
@@ -159,7 +159,7 @@ function getTeamData(org) {
 }
 
 /**
- * Parses the team data to get team id for the given team name 
+ * Parses the team data to get team id for the given team name
  *
  * @param teamName Team name
  * @param org Organization name
@@ -175,7 +175,7 @@ function getTeamId(teamName, org) {
 
 /**
  * Removes a repository from a team inside the given org
- * 
+ *
  * @param repoName Repository name
  * @param teamName Team name
  * @param org Organization name
@@ -199,7 +199,7 @@ function removeTeamRepository(repoName, teamName, org) {
 
 /**
  * Adds a user to the given team
- * 
+ *
  * @param username username of the user
  * @param teamName Team name
  * @param org Organization name
@@ -223,7 +223,7 @@ function addUserToTeam(username, teamName, org) {
 
 /**
  * Removes a user from the given team.
- * 
+ *
  * @param username The user's username
  * @param teamName Team name
  * @param org Organization name
@@ -246,7 +246,7 @@ function removeUserFromTeam(username, teamName, org) {
 
 /**
  * Updates team repository permissions
- * 
+ *
  * @param repoName repository name
  * @param teamName team name
  * @org orgnaization name
@@ -272,18 +272,38 @@ function updateTeamRepositoryPermissions(repoName, teamName, org, permission) {
 }
 
 
+//readFILE line by line and assign the teams to ids.
+function processFile(inputFile) {
+    var fs = require('fs'),
+        readline = require('readline'),
+        instream = fs.createReadStream(inputFile),
+        outstream = new (require('stream'))(),
+        rl = readline.createInterface(instream, outstream);
+
+    rl.on('line', function (line) {
+        // console.log("username: " + line.split(":")[0]);
+				// console.log("reponame: " + line.split(":")[1]);
+				var username = line.split(":")[0];
+				var teamname = line.split(":")[1];
+				addUserToTeam(username, teamname, "assignme");
+    });
+
+    rl.on('close', function (line) {
+        // console.log('done reading file.');
+    });
+}
+
+
 //**************************************************************
 //**************************************************************
 //************************** Testing****************************
 //**************************************************************
 //**************************************************************
 
+// var usernames = ["theferrit32", "shorsher", "chbrown13", "sheckman", "jctetter", "ssmirr"];
 
-
-
-var usernames = ["theferrit32", "shorsher", "chbrown13", "sheckman", "jctetter", "ssmirr"];
 // create team and repos 1-6
-// for (var i = 0; i < 6; i++) {
+// for (var i = 0; i < 3; i++) {
 // 	createTeam(i.toString(), "assignme");
 // 	createRepo(i.toString(), "assignme");
 // }
@@ -292,7 +312,7 @@ var usernames = ["theferrit32", "shorsher", "chbrown13", "sheckman", "jctetter",
 // getTeamData("assignme");
 
 //Assign repository to teams:
-// for (var i = 0; i < 6; i++) {
+// for (var i = 0; i < 3; i++) {
 // 	addRepoToTeam(i, i, "assignme");
 // }
 
@@ -303,7 +323,7 @@ var usernames = ["theferrit32", "shorsher", "chbrown13", "sheckman", "jctetter",
 
 //Update repo permissions:
 // for (var i = 0; i < 6; i++) {
-// 	updateTeamRepositoryPermissions(i, i, "assignme", "pull");	
+// 	updateTeamRepositoryPermissions(i, i, "assignme", "pull");
 // }
 
 //removing users from teams:
@@ -326,3 +346,30 @@ var usernames = ["theferrit32", "shorsher", "chbrown13", "sheckman", "jctetter",
 // 	deleteRepo(i.toString(), "assignme");
 // }
 
+// reading repository data and assigning the team names
+// processFile('ncsu_repository_data');
+
+
+
+
+//**************************************************************
+//**************************************************************
+//*********************** Instructions *************************
+//**************************************************************
+//**************************************************************
+
+// Here are the steps:
+
+// *** 1 ***
+// assignme is the organization name
+// getTeamData("assignme");
+
+
+// *** 2 ***
+// ncsu_repository_data is the repository data (on each line username:teamname)
+processFile('ncsu_repository_data');
+
+
+// Please MAKE SURE run each of the steps above on by one (comment out the one that you don't want to run)
+// otherwise it might nto work correctly.
+// ** This is the next thing I need to fix **
