@@ -1,8 +1,11 @@
 var request = require('request');
 var fs = require("fs");
+var enterprise_url = "https://github.ncsu.edu/api/v3/";
+// var enterprise_url = 'https://api.github.com/';
 
 // reading the token from file - Synchronous read
 var token = fs.readFileSync('token');
+var token = token.toString();
 
 //**************************************************************
 //**************************************************************
@@ -16,7 +19,7 @@ var token = fs.readFileSync('token');
 function createRepo(name, org) {
 	var options = {
 		// url: ' https://api.github.com/user/repos',
-		url: 'https://api.github.com/orgs/' + org + '/repos',
+		url: enterprise_url + 'orgs/' + org + '/repos',
 		method: 'POST',
 		headers: {
 			"User-Agent": "AssignMe",
@@ -45,7 +48,7 @@ function createRepo(name, org) {
  */
 function deleteRepo(repoName, org) {
 	var options = {
-		url: 'https://api.github.com/repos/' + org + '/' + repoName,
+		url: enterprise_url+ 'repos/' + org + '/' + repoName,
 		method: 'DELETE',
 		headers: {
 			"User-Agent": "AssignMe",
@@ -66,7 +69,7 @@ function deleteRepo(repoName, org) {
  */
 function createTeam(teamName, org) {
 	var options = {
-		url: 'https://api.github.com/orgs/' + org + '/teams',
+		url: enterprise_url + 'orgs/' + org + '/teams',
 		method: 'POST',
 		headers: {
 			"User-Agent": "AssignMe",
@@ -97,7 +100,7 @@ function createTeam(teamName, org) {
  */
 function addRepoToTeam(repoName, teamName, org) {
 	var options = {
-		url: 'https://api.github.com/teams/' + getTeamId(teamName, org) + '/repos/' + org + '/' + repoName,
+		url: enterprise_url + 'teams/' + getTeamId(teamName, org) + '/repos/' + org + '/' + repoName,
 		method: 'PUT',
 		headers: {
 			"User-Agent": "AssignMe",
@@ -118,7 +121,7 @@ function addRepoToTeam(repoName, teamName, org) {
  */
 function deleteTeam(id) {
 	var options = {
-		url: 'https://api.github.com/teams/' + id.toString(),
+		url: enterprise_url + 'teams/' + id.toString(),
 		method: 'DELETE',
 		headers: {
 			"User-Agent": "AssignMe",
@@ -144,7 +147,7 @@ function deleteTeam(id) {
  */
 function getTeamData(org) {
 	var options = {
-		url: 'https://api.github.com/orgs/' + org + '/teams',
+		url: enterprise_url + 'orgs/' + org + '/teams',
 		method: 'GET',
 		headers: {
 			"User-Agent": "AssignMe",
@@ -155,6 +158,7 @@ function getTeamData(org) {
 
 	request(options, function (error, response, body) {
 		fs.writeFile("team.json", body, function (err) { });
+		// console.log(body);
 	});
 }
 
@@ -182,7 +186,7 @@ function getTeamId(teamName, org) {
  */
 function removeTeamRepository(repoName, teamName, org) {
 	var options = {
-		url: 'https://api.github.com/teams/' + getTeamId(teamName, org) + '/repos/' + org + '/' + repoName,
+		url: enterprise_url + 'teams/' + getTeamId(teamName, org) + '/repos/' + org + '/' + repoName,
 		method: 'DELETE',
 		headers: {
 			"User-Agent": "AssignMe",
@@ -206,7 +210,7 @@ function removeTeamRepository(repoName, teamName, org) {
  */
 function addUserToTeam(username, teamName, org) {
 	var options = {
-		url: 'https://api.github.com/teams/' + getTeamId(teamName, org) + '/memberships/' + username,
+		url: enterprise_url + 'teams/' + getTeamId(teamName, org) + '/memberships/' + username,
 		method: 'PUT',
 		headers: {
 			"User-Agent": "AssignMe",
@@ -230,7 +234,7 @@ function addUserToTeam(username, teamName, org) {
  */
 function removeUserFromTeam(username, teamName, org) {
 	var options = {
-		url: 'https://api.github.com/teams/' + getTeamId(teamName, org) + '/memberships/' + username,
+		url: enterprise_url + 'teams/' + getTeamId(teamName, org) + '/memberships/' + username,
 		method: 'DELETE',
 		headers: {
 			"User-Agent": "AssignMe",
@@ -254,7 +258,7 @@ function removeUserFromTeam(username, teamName, org) {
  */
 function updateTeamRepositoryPermissions(repoName, teamName, org, permission) {
 	var options = {
-		url: 'https://api.github.com/teams/' + getTeamId(teamName, org) + '/repos/' + org + '/' + repoName,
+		url: enterprise_url + 'teams/' + getTeamId(teamName, org) + '/repos/' + org + '/' + repoName,
 		method: 'PUT',
 		headers: {
 			"User-Agent": "AssignMe",
@@ -303,7 +307,7 @@ function processFile(inputFile) {
 // var usernames = ["theferrit32", "shorsher", "chbrown13", "sheckman", "jctetter", "ssmirr"];
 
 // create team and repos 1-6
-// for (var i = 0; i < 3; i++) {
+// for (var i = 0; i < 100; i++) {
 // 	createTeam(i.toString(), "assignme");
 // 	createRepo(i.toString(), "assignme");
 // }
@@ -362,12 +366,13 @@ function processFile(inputFile) {
 
 // *** 1 ***
 // assignme is the organization name
-// getTeamData("assignme");
+// getTeamData("engr-csc216-spring2016");
 
 
 // *** 2 ***
 // ncsu_repository_data is the repository data (on each line username:teamname)
-processFile('ncsu_repository_data');
+// processFile('ncsu_repository_data');
+// processFile('P1_repos.csv');
 
 
 // Please MAKE SURE run each of the steps above on by one (comment out the one that you don't want to run)
