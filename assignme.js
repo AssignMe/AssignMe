@@ -121,7 +121,7 @@ function addRepoToTeam(repoName, teamName, org) {
  */
 function deleteTeam(id) {
 	var options = {
-		url: enterprise_url + 'teams/' + id.toString(),
+		url: enterprise_url + 'teams/' + id,
 		method: 'DELETE',
 		headers: {
 			"User-Agent": "AssignMe",
@@ -132,12 +132,9 @@ function deleteTeam(id) {
 
 	request(options, function (error, response, body) {
 		console.log("Deleted team: " + id.toString());
+		console.log(error);
 	});
 }
-
-
-
-
 
 
 /**
@@ -145,22 +142,38 @@ function deleteTeam(id) {
  *
  * @param org Organization name
  */
+ var pageNumber = 1;
 function getTeamData(org) {
-	var options = {
-		url: enterprise_url + 'orgs/' + org + '/teams',
-		method: 'GET',
-		headers: {
-			"User-Agent": "AssignMe",
-			"content-type": "application/json",
-			"Authorization": token
-		}
-	};
+		var options = {
+			url: enterprise_url + 'orgs/' + org + '/teams?page='+pageNumber+'&per_page=100',
+			method: 'GET',
+			headers: {
+				"User-Agent": "AssignMe",
+				"content-type": "application/json",
+				"Authorization": token
+			}
+		};
 
-	request(options, function (error, response, body) {
-		fs.writeFile("team.json", body, function (err) { });
-		// console.log(body);
-	});
+		request(options, function (error, response, body) {
+			fs.appendFile("team.json", body, function (err) { });
+		});
+		if(pageNumber > 10)
+			return;
+		setTimeout(function() {
+			console.log('Blah blah blah blah extra-blah');
+			pageNumber++;
+			getTeamData(org);
+		}, 5000);
 }
+
+//Makes correction to json files after merging them
+function writeJSON(){
+	var previousData = fs.readFileSync('./team.json', 'utf8').toString();
+	previousData = previousData.split('[]').join("");
+	previousData = previousData.split('][').join(",");
+	fs.writeFile('team.json', previousData, function(){});
+}
+
 
 /**
  * Parses the team data to get team id for the given team name
@@ -172,7 +185,7 @@ function getTeamId(teamName, org) {
 	var obj = JSON.parse(fs.readFileSync('./team.json', 'utf8'));
 	for (var i = 0; i < obj.length; i++) {
 		if (obj[i].name == teamName)
-			return obj[i].id;
+			return obj[i].id.toString();
 	}
 }
 
@@ -277,7 +290,7 @@ function updateTeamRepositoryPermissions(repoName, teamName, org, permission) {
 
 
 //readFILE line by line and assign the teams to ids.
-function processFile(inputFile) {
+function processFile(inputFile, organization) {
     var fs = require('fs'),
         readline = require('readline'),
         instream = fs.createReadStream(inputFile),
@@ -289,7 +302,7 @@ function processFile(inputFile) {
 				// console.log("reponame: " + line.split(":")[1]);
 				var username = line.split(":")[0];
 				var teamname = line.split(":")[1];
-				addUserToTeam(username, teamname, "assignme");
+				addUserToTeam(username, teamname, organization);
     });
 
     rl.on('close', function (line) {
@@ -307,13 +320,14 @@ function processFile(inputFile) {
 // var usernames = ["theferrit32", "shorsher", "chbrown13", "sheckman", "jctetter", "ssmirr"];
 
 // create team and repos 1-6
-// for (var i = 0; i < 100; i++) {
+// for (var i = 0; i < 500; i++) {
 // 	createTeam(i.toString(), "assignme");
 // 	createRepo(i.toString(), "assignme");
 // }
 
-//get team data
+// get team data
 // getTeamData("assignme");
+// writeJSON();
 
 //Assign repository to teams:
 // for (var i = 0; i < 3; i++) {
@@ -321,8 +335,10 @@ function processFile(inputFile) {
 // }
 
 //Adding users to teams:
-// for (var i = 0; i < 6; i++) {
-// 	addUserToTeam(usernames[i], i, "assignme");
+// for (var i = 0; i < 200; i++) {
+// 	// addUserToTeam(usernames[i], i, "assignme");
+// 	addUserToTeam('ssmirr', i, "assignme");
+// 	console.log(getTeamId(i, "assignme"));
 // }
 
 //Update repo permissions:
@@ -341,7 +357,8 @@ function processFile(inputFile) {
 // }
 
 //delete team 1-6
-// for (var i = 0; i < 6; i++) {
+// for (var i = 0; i < 200; i++) {
+// 		// deleteTeam(getTeamId(i.toString(), "assignme"));
 // 		deleteTeam(getTeamId(i.toString(), "assignme"));
 // }
 
@@ -364,15 +381,14 @@ function processFile(inputFile) {
 
 // Here are the steps:
 
-// *** 1 ***
-// assignme is the organization name
+// *** 1 *** assignme is the organization name
 // getTeamData("engr-csc216-spring2016");
 
+// *** 2 *** Makes correction to json files after merging them
+// writeJSON();
 
-// *** 2 ***
-// ncsu_repository_data is the repository data (on each line username:teamname)
-// processFile('ncsu_repository_data');
-// processFile('P1_repos.csv');
+// *** 3 *** ncsu_repository_data is the repository data (on each line username:teamname)
+// processFile('P1_repos.csv', 'engr-csc216-spring2016');
 
 
 // Please MAKE SURE run each of the steps above on by one (comment out the one that you don't want to run)
