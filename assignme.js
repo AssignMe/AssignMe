@@ -17,26 +17,26 @@ var token = token.toString();
  * Creates repository under the given org and given name
  */
 function createRepo(name, org) {
-	var options = {
-		// url: ' https://api.github.com/user/repos',
-		url: enterprise_url + 'orgs/' + org + '/repos',
-		method: 'POST',
-		headers: {
-			"User-Agent": "AssignMe",
-			"content-type": "application/json",
-			"Authorization": token
-		},
-		json: {
-			"name": name,
-			"auto_init": true,
-			"public": true,
-			"gitignore_template": "nanoc"
-		}
-	};
+  var options = {
+    // url: ' https://api.github.com/user/repos',
+    url: enterprise_url + 'orgs/' + org + '/repos',
+    method: 'POST',
+    headers: {
+      "User-Agent": "AssignMe",
+      "content-type": "application/json",
+      "Authorization": token
+    },
+    json: {
+      "name": name,
+      "auto_init": true,
+      "public": true,
+      "gitignore_template": "nanoc"
+    }
+  };
 
-	request(options, function (error, response, body) {
-		console.log("Created repository: " + name);
-	});
+  request(options, function(error, response, body) {
+    console.log("Created repository: " + name);
+  });
 }
 
 /**
@@ -47,19 +47,19 @@ function createRepo(name, org) {
  * @param org Organization name
  */
 function deleteRepo(repoName, org) {
-	var options = {
-		url: enterprise_url+ 'repos/' + org + '/' + repoName,
-		method: 'DELETE',
-		headers: {
-			"User-Agent": "AssignMe",
-			"content-type": "application/json",
-			"Authorization": token
-		}
-	};
+  var options = {
+    url: enterprise_url + 'repos/' + org + '/' + repoName,
+    method: 'DELETE',
+    headers: {
+      "User-Agent": "AssignMe",
+      "content-type": "application/json",
+      "Authorization": token
+    }
+  };
 
-	request(options, function (error, response, body) {
-		console.log("Deleted repository: " + repoName);
-	});
+  request(options, function(error, response, body) {
+    console.log("Deleted repository: " + repoName);
+  });
 }
 
 /**
@@ -68,26 +68,26 @@ function deleteRepo(repoName, org) {
  * @param org Organization name
  */
 function createTeam(teamName, org) {
-	var options = {
-		url: enterprise_url + 'orgs/' + org + '/teams',
-		method: 'POST',
-		headers: {
-			"User-Agent": "AssignMe",
-			"content-type": "application/json",
-			"Authorization": token
-		},
-		json: {
-			"name": teamName,
-			"auto_init": true,
-			"public": true,
-			"gitignore_template": "nanoc"
-		}
-	};
+  var options = {
+    url: enterprise_url + 'orgs/' + org + '/teams',
+    method: 'POST',
+    headers: {
+      "User-Agent": "AssignMe",
+      "content-type": "application/json",
+      "Authorization": token
+    },
+    json: {
+      "name": teamName,
+      "auto_init": true,
+      "public": true,
+      "gitignore_template": "nanoc"
+    }
+  };
 
-	request(options, function (error, response, body) {
-		var ID = body.id;
-		return ID;
-	});
+  request(options, function(error, response, body) {
+    var ID = body.id;
+    return ID;
+  });
 }
 
 
@@ -99,19 +99,19 @@ function createTeam(teamName, org) {
  * @param org Organization name
  */
 function addRepoToTeam(repoName, teamName, org) {
-	var options = {
-		url: enterprise_url + 'teams/' + getTeamId(teamName, org) + '/repos/' + org + '/' + repoName,
-		method: 'PUT',
-		headers: {
-			"User-Agent": "AssignMe",
-			"content-type": "application/json",
-			"Authorization": token
-		}
-	};
+  var options = {
+    url: enterprise_url + 'teams/' + getTeamId(teamName, org) + '/repos/' + org + '/' + repoName,
+    method: 'PUT',
+    headers: {
+      "User-Agent": "AssignMe",
+      "content-type": "application/json",
+      "Authorization": token
+    }
+  };
 
-	request(options, function (error, response, body) {
-		console.log("Added repository: " + repoName + " to Team: " + teamName + " in " + org + "organization");
-	});
+  request(options, function(error, response, body) {
+    console.log("Added repository: " + repoName + " to Team: " + teamName + " in " + org + "organization");
+  });
 }
 
 /**
@@ -120,20 +120,20 @@ function addRepoToTeam(repoName, teamName, org) {
  * @param id Team id
  */
 function deleteTeam(id) {
-	var options = {
-		url: enterprise_url + 'teams/' + id,
-		method: 'DELETE',
-		headers: {
-			"User-Agent": "AssignMe",
-			"content-type": "application/json",
-			"Authorization": token
-		}
-	};
+  var options = {
+    url: enterprise_url + 'teams/' + id,
+    method: 'DELETE',
+    headers: {
+      "User-Agent": "AssignMe",
+      "content-type": "application/json",
+      "Authorization": token
+    }
+  };
 
-	request(options, function (error, response, body) {
-		console.log("Deleted team: " + id.toString());
-		console.log(error);
-	});
+  request(options, function(error, response, body) {
+    console.log("Deleted team: " + id.toString());
+    console.log(error);
+  });
 }
 
 
@@ -142,36 +142,37 @@ function deleteTeam(id) {
  *
  * @param org Organization name
  */
- var pageNumber = 1;
-function getTeamData(org) {
-		var options = {
-			url: enterprise_url + 'orgs/' + org + '/teams?page='+pageNumber+'&per_page=100',
-			method: 'GET',
-			headers: {
-				"User-Agent": "AssignMe",
-				"content-type": "application/json",
-				"Authorization": token
-			}
-		};
+var pageNumber = 1;
 
-		request(options, function (error, response, body) {
-			fs.appendFile("team.json", body, function (err) { });
-		});
-		if(pageNumber > 10)
-			return;
-		setTimeout(function() {
-			console.log('Blah blah blah blah extra-blah');
-			pageNumber++;
-			getTeamData(org);
-		}, 5000);
+function getTeamData(org) {
+  var options = {
+    url: enterprise_url + 'orgs/' + org + '/teams?page=' + pageNumber + '&per_page=100',
+    method: 'GET',
+    headers: {
+      "User-Agent": "AssignMe",
+      "content-type": "application/json",
+      "Authorization": token
+    }
+  };
+
+  request(options, function(error, response, body) {
+    fs.appendFile("team.json", body, function(err) {});
+  });
+  if (pageNumber > 10)
+    return;
+  setTimeout(function() {
+    console.log('Blah blah blah blah extra-blah');
+    pageNumber++;
+    getTeamData(org);
+  }, 5000);
 }
 
 //Makes correction to json files after merging them
-function writeJSON(){
-	var previousData = fs.readFileSync('./team.json', 'utf8').toString();
-	previousData = previousData.split('[]').join("");
-	previousData = previousData.split('][').join(",");
-	fs.writeFile('team.json', previousData, function(){});
+function writeJSON() {
+  var previousData = fs.readFileSync('./team.json', 'utf8').toString();
+  previousData = previousData.split('[]').join("");
+  previousData = previousData.split('][').join(",");
+  fs.writeFile('team.json', previousData, function() {});
 }
 
 
@@ -182,11 +183,11 @@ function writeJSON(){
  * @param org Organization name
  */
 function getTeamId(teamName, org) {
-	var obj = JSON.parse(fs.readFileSync('./team.json', 'utf8'));
-	for (var i = 0; i < obj.length; i++) {
-		if (obj[i].name == teamName)
-			return obj[i].id.toString();
-	}
+  var obj = JSON.parse(fs.readFileSync('./team.json', 'utf8'));
+  for (var i = 0; i < obj.length; i++) {
+    if (obj[i].name == teamName)
+      return obj[i].id.toString();
+  }
 }
 
 
@@ -198,19 +199,19 @@ function getTeamId(teamName, org) {
  * @param org Organization name
  */
 function removeTeamRepository(repoName, teamName, org) {
-	var options = {
-		url: enterprise_url + 'teams/' + getTeamId(teamName, org) + '/repos/' + org + '/' + repoName,
-		method: 'DELETE',
-		headers: {
-			"User-Agent": "AssignMe",
-			"content-type": "application/json",
-			"Authorization": token
-		}
-	};
+  var options = {
+    url: enterprise_url + 'teams/' + getTeamId(teamName, org) + '/repos/' + org + '/' + repoName,
+    method: 'DELETE',
+    headers: {
+      "User-Agent": "AssignMe",
+      "content-type": "application/json",
+      "Authorization": token
+    }
+  };
 
-	request(options, function (error, response, body) {
-		console.log("Deleted team repository: " + teamName);
-	});
+  request(options, function(error, response, body) {
+    console.log("Deleted team repository: " + teamName);
+  });
 }
 
 
@@ -222,19 +223,20 @@ function removeTeamRepository(repoName, teamName, org) {
  * @param org Organization name
  */
 function addUserToTeam(username, teamName, org) {
-	var options = {
-		url: enterprise_url + 'teams/' + getTeamId(teamName, org) + '/memberships/' + username,
-		method: 'PUT',
-		headers: {
-			"User-Agent": "AssignMe",
-			"content-type": "application/json",
-			"Authorization": token
-		}
-	};
+  var options = {
+    url: enterprise_url + 'teams/' + getTeamId(teamName, org) + '/memberships/' + username,
+    method: 'PUT',
+    headers: {
+      "User-Agent": "AssignMe",
+      "content-type": "application/json",
+      "Authorization": token
+    }
+  };
 
-	request(options, function (error, response, body) {
-		console.log("Added " + username + " to team: " + teamName);
-	});
+  request(options, function(error, response, body) {
+		// console.log(getTeamId(teamName, org));
+    console.log("Added " + username + " to team: " + teamName);
+  });
 }
 
 
@@ -246,19 +248,19 @@ function addUserToTeam(username, teamName, org) {
  * @param org Organization name
  */
 function removeUserFromTeam(username, teamName, org) {
-	var options = {
-		url: enterprise_url + 'teams/' + getTeamId(teamName, org) + '/memberships/' + username,
-		method: 'DELETE',
-		headers: {
-			"User-Agent": "AssignMe",
-			"content-type": "application/json",
-			"Authorization": token
-		}
-	};
+  var options = {
+    url: enterprise_url + 'teams/' + getTeamId(teamName, org) + '/memberships/' + username,
+    method: 'DELETE',
+    headers: {
+      "User-Agent": "AssignMe",
+      "content-type": "application/json",
+      "Authorization": token
+    }
+  };
 
-	request(options, function (error, response, body) {
-		console.log("Removed " + username + " from team: " + teamName);
-	});
+  request(options, function(error, response, body) {
+    console.log("Removed " + username + " from team: " + teamName);
+  });
 }
 
 /**
@@ -270,45 +272,68 @@ function removeUserFromTeam(username, teamName, org) {
  * @permission new permission level : "pull", "push", "admin"
  */
 function updateTeamRepositoryPermissions(repoName, teamName, org, permission) {
-	var options = {
-		url: enterprise_url + 'teams/' + getTeamId(teamName, org) + '/repos/' + org + '/' + repoName,
-		method: 'PUT',
-		headers: {
-			"User-Agent": "AssignMe",
-			"content-type": "application/json",
-			"Authorization": token
-		},
-		json: {
-			"permission": permission
-		}
-	};
+  var options = {
+    url: enterprise_url + 'teams/' + getTeamId(teamName, org) + '/repos/' + org + '/' + repoName,
+    method: 'PUT',
+    headers: {
+      "User-Agent": "AssignMe",
+      "content-type": "application/json",
+      "Authorization": token
+    },
+    json: {
+      "permission": permission
+    }
+  };
 
-	request(options, function (error, response, body) {
-		console.log("Updated permission on repository: " + repoName + " to " + permission);
-	});
+  request(options, function(error, response, body) {
+		// console.log(error);
+    console.log("Updated permission on repository: " + repoName + " to " + permission);
+  });
 }
-
+// updateTeamRepositoryPermissions("3", "3", "assignme", "push");
 
 //readFILE line by line and assign the teams to ids.
-function processFile(inputFile, organization) {
-    var fs = require('fs'),
-        readline = require('readline'),
-        instream = fs.createReadStream(inputFile),
-        outstream = new (require('stream'))(),
-        rl = readline.createInterface(instream, outstream);
+function assignAll(inputFile, organization) {
+  var fs = require('fs'),
+    readline = require('readline'),
+    instream = fs.createReadStream(inputFile),
+    outstream = new(require('stream'))(),
+    rl = readline.createInterface(instream, outstream);
 
-    rl.on('line', function (line) {
-        // console.log("username: " + line.split(":")[0]);
-				// console.log("reponame: " + line.split(":")[1]);
-				var username = line.split(":")[0];
-				var teamname = line.split(":")[1];
-				addUserToTeam(username, teamname, organization);
-    });
+  rl.on('line', function(line) {
+    // console.log("username: " + line.split(":")[0]);
+    // console.log("reponame: " + line.split(":")[1]);
+    var username = line.split(":")[0];
+    var teamname = line.split(":")[1];
+    addUserToTeam(username, teamname, organization);
+  });
 
-    rl.on('close', function (line) {
-        // console.log('done reading file.');
-    });
+  rl.on('close', function(line) {
+    // console.log('done reading file.');
+  });
 }
+
+//readFILE line by line and change access of each user to "permission" parameter
+function changeAccess(inputFile, organization, permission) {
+  var fs = require('fs'),
+    readline = require('readline'),
+    instream = fs.createReadStream(inputFile),
+    outstream = new(require('stream'))(),
+    rl = readline.createInterface(instream, outstream);
+
+  rl.on('line', function(line) {
+    // console.log("username: " + line.split(":")[0]);
+    // console.log("reponame: " + line.split(":")[1]);
+    var username = line.split(":")[0];
+    var teamname = line.split(":")[1];
+    updateTeamRepositoryPermissions(teamname, teamname, organization, permission);
+  });
+
+  rl.on('close', function(line) {
+    // console.log('done reading file.');
+  });
+}
+
 
 
 //**************************************************************
@@ -368,7 +393,7 @@ function processFile(inputFile, organization) {
 // }
 
 // reading repository data and assigning the team names
-// processFile('ncsu_repository_data');
+// assignAll('ncsu_repository_data');
 
 
 
@@ -379,16 +404,75 @@ function processFile(inputFile, organization) {
 //**************************************************************
 //**************************************************************
 
+
+
+
+var args = process.argv.slice(2);
+var command = args[0];
+var org = args[1];
+var repositories = args[2]; //unityid:teamname
+var permission = args[3]; //new permission level: push/pull for updating use access level
+
+/** handling the entered command */
+if (command === 'getdata') {
+  if (typeof command !== 'undefined') {
+    if (typeof org == 'undefined')
+      console.error('Second commandline parameter not entered: Organization Name');
+    else {
+      console.log('Get data ... \n\n');
+      getTeamData(org);
+    }
+  }
+}
+
+//fixing the json file after concatinating all pages.
+else if (command === 'makejson') {
+  console.log('Making the json file ...\n\n');
+  writeJSON();
+}
+
+//assign the repositories
+else if (command === 'assign') {
+  if (typeof org == 'undefined')
+    console.error('Commandline parameter not entered: Organization_Name Repository_List_File');
+  else if (typeof repositories == 'undefined')
+    console.error('Third Commandline parameter not entered: Repository_List_File');
+  else {
+    console.log('Assigning the repositories ...\n\n');
+    assignAll(repositories, org);
+  }
+}
+
+//changing user access to repositories
+else if (command === 'access') {
+  if (typeof org == 'undefined')
+    console.error('Commandline parameter not entered: Organization_Name Repository_List_File Access_Level');
+  else if (typeof repositories == 'undefined')
+    console.error('Commandline parameter not entered: Repository_List_File Access_Level');
+  else if (typeof permission == 'undefined')
+    console.error('4th Commandline parameter not entered: Access_Level');
+  else {
+    console.log('Assigning the repositories ...\n\n');
+    changeAccess(repositories, org, permission.toString());
+  }
+} else
+  console.error('Invalid parameter entered! use: getdata, makejson, assign');
+
+
+
 // Here are the steps:
 
 // *** 1 *** assignme is the organization name
-// getTeamData("engr-csc216-spring2016");
+// node assignme.js getdata engr-csc216-spring2016
 
 // *** 2 *** Makes correction to json files after merging them
-// writeJSON();
+// node assignme.js makejson
 
-// *** 3 *** ncsu_repository_data is the repository data (on each line username:teamname)
-// processFile('P1_repos.csv', 'engr-csc216-spring2016');
+// *** 3 *** P1_repos.cvs is the team data (on each line username:teamname)
+// node assignme.js assign engr-csc216-spring2016 P1_repos.csv
+
+// *** To change use access on repositories run: changeAccess
+// node assignme.js access engr-csc216-spring2016 P1_repos.csv pull
 
 
 // Please MAKE SURE run each of the steps above on by one (comment out the one that you don't want to run)
