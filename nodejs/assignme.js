@@ -1,11 +1,12 @@
-var request = require('request');
+// var request = require('request');
+var request = require('sync-request');
 var fs = require("fs");
-var enterprise_url = "https://github.ncsu.edu/api/v3/";
-// var enterprise_url = 'https://api.github.com/';
+// var enterprise_url = "https://github.ncsu.edu/api/v3/";
+var enterprise_url = 'https://api.github.com/';
 
 // reading the token from file - Synchronous read
 var token = fs.readFileSync('token');
-var token = token.toString();
+token = token.toString();
 
 //**************************************************************
 //**************************************************************
@@ -38,6 +39,26 @@ function createRepo(name, org) {
     console.log("Created repository: " + name);
   });
 }
+
+var createRepoSync = function (name, org){
+  var res = request('POST',  enterprise_url + 'orgs/' + org + '/repos', {
+    "headers": {
+      "user-agent": "AssignMe",
+      "Authorization": token
+    }
+  }, {
+    json:{
+      "name": name,
+      "auto_init": true,
+      "public": true,
+      "gitignore_template": "nanoc"
+    }
+  });
+
+  console.log(res.getBody('utf8'));
+}
+
+createRepoSync('test1', 'AssignMe');
 
 /**
  * Deletes a repository under the given org
@@ -407,56 +428,56 @@ function changeAccess(inputFile, organization, permission) {
 
 
 
-var args = process.argv.slice(2);
-var command = args[0];
-var org = args[1];
-var repositories = args[2]; //unityid:teamname
-var permission = args[3]; //new permission level: push/pull for updating use access level
-
-/** handling the entered command */
-if (command === 'getdata') {
-  if (typeof command !== 'undefined') {
-    if (typeof org == 'undefined')
-      console.error('Second commandline parameter not entered: Organization Name');
-    else {
-      console.log('Get data ... \n\n');
-      getTeamData(org);
-    }
-  }
-}
-
-//fixing the json file after concatinating all pages.
-else if (command === 'makejson') {
-  console.log('Making the json file ...\n\n');
-  writeJSON();
-}
-
-//assign the repositories
-else if (command === 'assign') {
-  if (typeof org == 'undefined')
-    console.error('Commandline parameter not entered: Organization_Name Repository_List_File');
-  else if (typeof repositories == 'undefined')
-    console.error('Third Commandline parameter not entered: Repository_List_File');
-  else {
-    console.log('Assigning the repositories ...\n\n');
-    assignAll(repositories, org);
-  }
-}
-
-//changing user access to repositories
-else if (command === 'access') {
-  if (typeof org == 'undefined')
-    console.error('Commandline parameter not entered: Organization_Name Repository_List_File Access_Level');
-  else if (typeof repositories == 'undefined')
-    console.error('Commandline parameter not entered: Repository_List_File Access_Level');
-  else if (typeof permission == 'undefined')
-    console.error('4th Commandline parameter not entered: Access_Level');
-  else {
-    console.log('Assigning the repositories ...\n\n');
-    changeAccess(repositories, org, permission.toString());
-  }
-} else
-  console.error('Invalid parameter entered! use: getdata, makejson, assign');
+// var args = process.argv.slice(2);
+// var command = args[0];
+// var org = args[1];
+// var repositories = args[2]; //unityid:teamname
+// var permission = args[3]; //new permission level: push/pull for updating use access level
+//
+// /** handling the entered command */
+// if (command === 'getdata') {
+//   if (typeof command !== 'undefined') {
+//     if (typeof org == 'undefined')
+//       console.error('Second commandline parameter not entered: Organization Name');
+//     else {
+//       console.log('Get data ... \n\n');
+//       getTeamData(org);
+//     }
+//   }
+// }
+//
+// //fixing the json file after concatinating all pages.
+// else if (command === 'makejson') {
+//   console.log('Making the json file ...\n\n');
+//   writeJSON();
+// }
+//
+// //assign the repositories
+// else if (command === 'assign') {
+//   if (typeof org == 'undefined')
+//     console.error('Commandline parameter not entered: Organization_Name Repository_List_File');
+//   else if (typeof repositories == 'undefined')
+//     console.error('Third Commandline parameter not entered: Repository_List_File');
+//   else {
+//     console.log('Assigning the repositories ...\n\n');
+//     assignAll(repositories, org);
+//   }
+// }
+//
+// //changing user access to repositories
+// else if (command === 'access') {
+//   if (typeof org == 'undefined')
+//     console.error('Commandline parameter not entered: Organization_Name Repository_List_File Access_Level');
+//   else if (typeof repositories == 'undefined')
+//     console.error('Commandline parameter not entered: Repository_List_File Access_Level');
+//   else if (typeof permission == 'undefined')
+//     console.error('4th Commandline parameter not entered: Access_Level');
+//   else {
+//     console.log('Assigning the repositories ...\n\n');
+//     changeAccess(repositories, org, permission.toString());
+//   }
+// } else
+//   console.error('Invalid parameter entered! use: getdata, makejson, assign');
 
 
 

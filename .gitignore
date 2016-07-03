@@ -38,3 +38,5 @@ token
 
 # Contains the team data:
 team.json
+
+env
