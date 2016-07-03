@@ -40,3 +40,6 @@ token
 team.json
 
 env
+
+*.csv
+*.db
