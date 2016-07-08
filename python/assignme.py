@@ -10,8 +10,8 @@ except ImportError:
 
 token = open('token', 'r').read()
 
-API_URL = 'https://api.github.com/'
-# API_URL = 'https://github.ncsu.edu/api/v3/'
+# API_URL = 'https://api.github.com/'
+API_URL = 'https://github.ncsu.edu/api/v3/'
 
 headers = {
     'User-Agent': 'AssignMe',
@@ -53,7 +53,7 @@ def createRepo(repoName, orgName):
 	json = {
 		'name': repoName,
 		'auto_init': 'true',
-		'public': 'true',
+		'public': 'false',
 		'gitignore_template': 'nanoc'
 	}
 
